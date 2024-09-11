@@ -1,10 +1,10 @@
-# Prerequisites
+# 前提条件
 
-In this lab you will review the machine requirements necessary to follow this tutorial.
+本実習では、このチュートリアルに従うために必要なマシン要件を確認します。
 
-## Virtual or Physical Machines
+## 仮想マシンまたは物理マシン
 
-This tutorial requires four (4) virtual or physical ARM64 machines running Debian 12 (bookworm). The follow table list the four machines and thier CPU, memory, and storage requirements.
+このチュートリアルでは、Debian 12 (bookworm) が動作する 4 台の仮想または物理 ARM64 マシンが必要です。以下の表は、4台のマシンとCPU、メモリ、ストレージの必要条件です。
 
 | Name    | Description            | CPU | RAM   | Storage |
 |---------|------------------------|-----|-------|---------|
@@ -13,18 +13,35 @@ This tutorial requires four (4) virtual or physical ARM64 machines running Debia
 | node-0  | Kubernetes worker node | 1   | 2GB   | 20GB    |
 | node-1  | Kubernetes worker node | 1   | 2GB   | 20GB    |
 
-How you provision the machines is up to you, the only requirement is that each machine meet the above system requirements including the machine specs and OS version. Once you have all four machine provisioned, verify the system requirements by running the `uname` command on each machine:
-
+どのようにマシンをプロビジョニングするかはあなた次第ですが、唯一の要件は、各マシンがマシンスペックとOSバージョンを含む上記のシステム要件を満たしていることです。4台のマシンのプロビジョニングが完了したら、各マシンで`uname`コマンドを実行してシステム要件を確認してください：
 ```bash 
 uname -mov
 ```
 
-After running the `uname` command you should see the following output:
-
+`uname`コマンドを実行すると、次のような出力が表示されるはずです：
 ```text
 #1 SMP Debian 6.1.55-1 (2023-09-29) aarch64 GNU/Linux
 ```
 
-You maybe surprised to see `aarch64` here, but that is the official name for the Arm Architecture 64-bit instruction set. You will often see `arm64` used by Apple, and the maintainers of the Linux kernel, when referring to support for `aarch64`. This tutorial will use `arm64` consistently throughout to avoid confusion.
+ここで`aarch64`を見た人は驚くかもしれないが、これはArmアーキテクチャの64ビット命令セットの公式名称である。AppleやLinuxカーネルのメンテナが`aarch64`のサポートに言及する際に`arm64`を使うのをよく見かけるだろう。このチュートリアルでは、混乱を避けるために終始一貫して `arm64` と表記します。
+
+### と、上記の原文では「マシン構成をいい感じに構築して！」と書いてあるますが、ここが一番の障害になりやすいです。
+
+まず、以前のバージョンで用いられていたGoogle Cloudを用いた構築は仕様上途中で進行不能になります。
+
+理由として、VMのサブネットマスクが/32で割り当てられることにより、サブネットを/24で切ることが出来ないためです。
+
+クラウドリソースを使う場合はAWSのEC2を使うとうまくいきます。
+
+EC2のVMでARM64のdebianを指定し、すべてのVMを同一のセキュリティグループに設定してください。
+
+セキュリティグループの設定としては、すべてのトラフィックとSSHの許可をしてください。
+
+スポットインスタンスなどはお好みで設定してください。
+
+その後作成したVM内で`uname -mov`コマンドを実行し、次のような出力が表示されるのを確認してください：
+```text
+#1 SMP Debian 6.1.55-1 (2023-09-29) aarch64 GNU/Linux
+```
 
 Next: [setting-up-the-jumpbox](02-jumpbox.md)
