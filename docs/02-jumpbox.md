@@ -1,41 +1,40 @@
-# Set Up The Jumpbox
+# Jumpboxのセットアップ
 
-In this lab you will set up one of the four machines to be a `jumpbox`. This machine will be used to run commands in this tutorial. While a dedicated machine is being used to ensure consistency, these commands can also be run from just about any machine including your personal workstation running macOS or Linux.
+この実習では4台のマシンのうち1台を `jumpbox` としてセットアップします。このマシンはこのチュートリアルのコマンドを実行するのに使われます。一貫性を確保するために専用のマシンを使用していますが、これらのコマンドはmacOSやLinuxを実行している個人のワークステーションを含む、ほぼすべてのマシンから実行することもできます。
 
-Think of the `jumpbox` as the administration machine that you will use as a home base when setting up your Kubernetes cluster from the ground up. One thing we need to do before we get started is install a few command line utilities and clone the Kubernetes The Hard Way git repository, which contains some additional configuration files that will be used to configure various Kubernetes components throughout this tutorial. 
+`jumpbox`は、Kubernetesクラスタを一からセットアップする際にホームベースとして使用する管理マシンだと考えてください。始める前にやっておかなければならないことの1つは、いくつかのコマンドラインユーティリティをインストールし、Kubernetes The Hard Wayのgitリポジトリをクローンすることです。
 
-Log in to the `jumpbox`:
+`jumpbox`へログイン:
 
 ```bash
 ssh root@jumpbox
 ```
 
-All commands will be run as the `root` user. This is being done for the sake of convenience, and will help reduce the number of commands required to set everything up.
+すべてのコマンドは `root` ユーザーとして実行します。これは利便性のためであり、すべてのセットアップに必要なコマンドの数を減らすためです。
 
-### Install Command Line Utilities
+### コマンドラインユーティリティのインストール
 
-Now that you are logged into the `jumpbox` machine as the `root` user, you will install the command line utilities that will be used to preform various tasks throughout the tutorial. 
+これで `root` ユーザーとして `jumpbox` マシンにログインしたので、チュートリアルを通して様々なタスクを実行するために使用するコマンドラインユーティリティをインストールします。
 
 ```bash
 apt-get -y install wget curl vim openssl git
 ```
 
-### Sync GitHub Repository
+### GitHubリポジトリを同期する
 
-Now it's time to download a copy of this tutorial which contains the configuration files and templates that will be used build your Kubernetes cluster from the ground up. Clone the Kubernetes The Hard Way git repository using the `git` command:
-
+このチュートリアルには、Kubernetesクラスタを一から構築するための設定ファイルとテンプレートが含まれています。 `git` コマンドを使って Kubernetes The Hard Way の git リポジトリをクローンします：
 ```bash
 git clone --depth 1 \
   https://github.com/kelseyhightower/kubernetes-the-hard-way.git
 ```
 
-Change into the `kubernetes-the-hard-way` directory:
+`kubernetes-the-hard-way`ディレクトリに移動：
 
 ```bash
 cd kubernetes-the-hard-way
 ```
 
-This will be the working directory for the rest of the tutorial. If you ever get lost run the `pwd` command to verify you are in the right directory when running commands on the `jumpbox`:
+チュートリアルの残りの部分はこのディレクトリで行います。もし道に迷ったら、`pwd`コマンドを実行して、`jumpbox`上でコマンドを実行するときには正しいディレクトリにいることを確認してください：
 
 ```bash
 pwd
@@ -45,23 +44,23 @@ pwd
 /root/kubernetes-the-hard-way
 ```
 
-### Download Binaries
+### バイナリのダウンロード
 
-In this section you will download the binaries for the various Kubernetes components. The binaries will be stored in the `downloads` directory on the `jumpbox`, which will reduce the amount of internet bandwidth required to complete this tutorial as we avoid downloading the binaries multiple times for each machine in our Kubernetes cluster.
+このセクションでは、様々なKubernetesコンポーネントのバイナリをダウンロードします。バイナリは `jumpbox` 上の `downloads` ディレクトリに保存され、Kubernetes クラスタ内の各マシンにバイナリを複数回ダウンロードする必要がなくなるため、このチュートリアルを完了するのに必要なインターネット帯域幅を削減できます。
 
-From the `kubernetes-the-hard-way` directory create a `downloads` directory using the `mkdir` command:
+`kubernetes-the-hard-way` ディレクトリから `mkdir` コマンドを使用して `downloads` ディレクトリを作成する：
 
 ```bash
 mkdir downloads
 ```
 
-The binaries that will be downloaded are listed in the `downloads.txt` file, which you can review using the `cat` command:
+ダウンロードされるバイナリは`downloads.txt`ファイルにリストアップされ、`cat`コマンドを使って確認することができます：
 
 ```bash
 cat downloads.txt
 ```
 
-Download the binaries listed in the `downloads.txt` file using the `wget` command:
+`wget`コマンドを使用して、`downloads.txt`ファイルに記載されているバイナリをダウンロード：
 
 ```bash
 wget -q --show-progress \
@@ -71,7 +70,7 @@ wget -q --show-progress \
   -i downloads.txt
 ```
 
-Depending on your internet connection speed it may take a while to download the `584` megabytes of binaries, and once the download is complete, you can list them using the `ls` command:
+インターネットの接続速度によっては、584メガバイトのバイナリをダウンロードするのに時間がかかる場合があります。ダウンロードが完了したら、`ls`コマンドを使用してバイナリを一覧表示できます：
 
 ```bash
 ls -loh downloads
@@ -92,11 +91,11 @@ total 584M
 -rw-r--r-- 1 root 9.6M Aug 10 18:57 runc.arm64
 ```
 
-### Install kubectl
+### kubectlのインストール
 
-In this section you will install the `kubectl`, the official Kubernetes client command line tool, on the `jumpbox` machine. `kubectl will be used to interact with the Kubernetes control once your cluster is provisioned later in this tutorial.
+このセクションでは、公式のKubernetesクライアントコマンドラインツールである `kubectl` を `jumpbox` マシンにインストールします。kubectlは、このチュートリアルの後半でクラスタを準備した後に、Kubernetesコントロールとの対話に使用されます。
 
-Use the `chmod` command to make the `kubectl` binary executable and move it to the `/usr/local/bin/` directory:
+`chmod` コマンドを使って `kubectl` バイナリを実行可能にして、`/usr/local/bin/` ディレクトリにコピー：
 
 ```bash
 {
@@ -105,7 +104,7 @@ Use the `chmod` command to make the `kubectl` binary executable and move it to t
 }
 ```
 
-At this point `kubectl` is installed and can be verified by running the `kubectl` command:
+この時点で `kubectl` がインストールされ、`kubectl` コマンドを実行して確認できます：
 
 ```bash
 kubectl version --client
@@ -116,6 +115,6 @@ Client Version: v1.28.3
 Kustomize Version: v5.0.4-0.20230601165947-6ce0bf390ce3
 ```
 
-At this point the `jumpbox` has been set up with all the command line tools and utilities necessary to complete the labs in this tutorial.
+これにより、`jumpbox`にはこのチュートリアルのラボを完了するのに必要なすべてのコマンドラインツールとユーティリティがセットアップされました。
 
 Next: [Provisioning Compute Resources](03-compute-resources.md)
