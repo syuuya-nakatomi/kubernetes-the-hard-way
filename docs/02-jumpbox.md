@@ -9,6 +9,15 @@
 ```bash
 ssh root@jumpbox
 ```
+### 補足
+
+---
+
+AWSで建てたVMの場合は`ssh -i /path/key-pair-name.pem instance-user-name@instance-public-dns-name`でログインしてください。なお、`instance-user-name`はデフォルトでは`admin`です。
+
+その後、`sudo su -`でrootにログインしてください。
+
+---
 
 すべてのコマンドは `root` ユーザーとして実行します。これは利便性のためであり、すべてのセットアップに必要なコマンドの数を減らすためです。
 
