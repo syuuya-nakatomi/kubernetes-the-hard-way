@@ -1,18 +1,18 @@
-# Provisioning Compute Resources
+# コンピューターリソースの準備
 
-Kubernetes requires a set of machines to host the Kubernetes control plane and the worker nodes where containers are ultimately run. In this lab you will provision the machines required for setting up a Kubernetes cluster.
+Kubernetesには、Kubernetesのコントロールプレーンと、コンテナが最終的に実行されるワーカーノードをホストするマシンのセットが必要です。このラボでは、Kubernetesクラスターのセットアップに必要なマシンを準備します。
 
-## Machine Database
+## マシンデータベース
 
-This tutorial will leverage a text file, which will serve as a machine database, to store the various machine attributes that will be used when setting up the Kubernetes control plane and worker nodes. The following schema represents entries in the machine database, one entry per line:
+本チュートリアルでは、Kubernetesのコントロールプレーンとワーカーノードをセットアップする際に使用する様々なマシン属性を保存するために、マシンデータベースとなるテキストファイルを活用します。以下のスキーマは、マシンデータベースのエントリを表しており、1行に1エントリです：
 
 ```text
 IPV4_ADDRESS FQDN HOSTNAME POD_SUBNET
 ```
 
-Each of the columns corresponds to a machine IP address `IPV4_ADDRESS`, fully qualified domain name `FQDN`, host name `HOSTNAME`, and the IP subnet `POD_SUBNET`. Kubernetes assigns one IP address per `pod` and the `POD_SUBNET` represents the unique IP address range assigned to each machine in the cluster for doing so.  
+各カラムは、マシンの IP アドレス `IPV4_ADDRESS`、完全修飾ドメイン名 `FQDN`、ホスト名 `HOSTNAME`、IP サブネット `POD_SUBNET` に対応している。Kubernetes は `pod` ごとに 1 つの IP アドレスを割り当て、`POD_SUBNET` はそのためにクラスタ内の各マシンに割り当てられた一意の IP アドレス範囲を表します。 
 
-Here is an example machine database similar to the one used when creating this tutorial. Notice the IP addresses have been masked out. Your machines can be assigned any IP address as long as each machine is reachable from each other and the `jumpbox`.
+本チュートリアルの作成時に使用したものと同様のマシンデータベースの例を示します。IPアドレスがマスクされていることに注意してください。各マシンがお互いに、そして `jumpbox` から到達可能である限り、マシンにどのような IP アドレスを割り当てることもできます。
 
 ```bash
 cat machines.txt
@@ -24,7 +24,7 @@ XXX.XXX.XXX.XXX node-0.kubernetes.local node-0 10.200.0.0/24
 XXX.XXX.XXX.XXX node-1.kubernetes.local node-1 10.200.1.0/24
 ```
 
-Now it's your turn to create a `machines.txt` file with the details for the three machines you will be using to create your Kubernetes cluster. Use the example machine database from above and add the details for your machines. 
+次は、Kubernetesクラスタを作成するために使用する3台のマシンの詳細を記載した`machines.txt`ファイルを作成します。先ほどのマシンデータベースの例を参考に、マシンの詳細を追加してください。
 
 ## Configuring SSH Access
 
