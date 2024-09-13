@@ -1,10 +1,10 @@
-# Bootstrapping the etcd Cluster
+# etcdクラスタのブートストラップ
 
-Kubernetes components are stateless and store cluster state in [etcd](https://github.com/etcd-io/etcd). In this lab you will bootstrap a three node etcd cluster and configure it for high availability and secure remote access.
+Kubernetesコンポーネントはステートレスで、クラスタの状態を[etcd](https://github.com/etcd-io/etcd)に保存します。本実習では、3ノードのetcdクラスターをブートストラップし、高可用性とセキュアなリモートアクセス用に設定します。
 
-## Prerequisites
+## 前提条件
 
-Copy `etcd` binaries and systemd unit files to the `server` instance:
+`etcd` のバイナリと systemd のユニットファイルを `server` インスタンスにコピーする：
 
 ```bash
 scp \
@@ -13,17 +13,17 @@ scp \
   root@server:~/
 ```
 
-The commands in this lab must be run on the `server` machine. Login to the `server` machine using the `ssh` command. Example:
+本実習のコマンドは `server` マシンで実行してください。`ssh` コマンドを使って `server` マシンにログイン：
 
 ```bash
 ssh root@server
 ```
 
-## Bootstrapping an etcd Cluster
+## etcdクラスタのブートストラップ
 
-### Install the etcd Binaries
+### etcdバイナリをインストールする
 
-Extract and install the `etcd` server and the `etcdctl` command line utility:
+`etcd`サーバーと `etcdctl` コマンドラインユーティリティを解凍してインストールする：
 
 ```bash
 {
@@ -32,7 +32,7 @@ Extract and install the `etcd` server and the `etcdctl` command line utility:
 }
 ```
 
-### Configure the etcd Server
+### etcdサーバーの設定
 
 ```bash
 {
@@ -43,15 +43,15 @@ Extract and install the `etcd` server and the `etcdctl` command line utility:
 }
 ```
 
-Each etcd member must have a unique name within an etcd cluster. Set the etcd name to match the hostname of the current compute instance:
+etcdの各メンバーは、etcdクラスタ内で一意な名前を持つ必要がある。etcd名を現在のコンピュートインスタンスのホスト名と一致するように設定します：
 
-Create the `etcd.service` systemd unit file:
+`etcd.service`のsystemdユニットファイルを作成：
 
 ```bash
 mv etcd.service /etc/systemd/system/
 ```
 
-### Start the etcd Server
+### etcdサーバーの起動
 
 ```bash
 {
@@ -61,9 +61,9 @@ mv etcd.service /etc/systemd/system/
 }
 ```
 
-## Verification
+## 確認
 
-List the etcd cluster members:
+etcdクラスターメンバーをリストする：
 
 ```bash
 etcdctl member list
