@@ -24,23 +24,42 @@ XXX.XXX.XXX.XXX node-0.kubernetes.local node-0 10.200.0.0/24
 XXX.XXX.XXX.XXX node-1.kubernetes.local node-1 10.200.1.0/24
 ```
 
+### 補足：
+
+---
+
+`IPV4_ADDRESS`の部分は各ホストの`Private IPv4 addresses`を書き込んでください。
+
+FQDNやホスト名はここに書かれているもの以外のものを使うと途中で進行不能になります。
+
+理由としてはpodとの通信にFQDNに制約があるためです。
+
+---
+
 次は、Kubernetesクラスタを作成するために使用する3台のマシンの詳細を記載した`machines.txt`ファイルを作成します。先ほどのマシンデータベースの例を参考に、マシンの詳細を追加してください。
 
-## Configuring SSH Access
+## SSHアクセスの設定
 
-SSH will be used to configure the machines in the cluster. Verify that you have `root` SSH access to each machine listed in your machine database. You may need to enable root SSH access on each node by updating the sshd_config file and restarting the SSH server.
+クラスタ内のマシンの設定にはSSHを使用します。マシンデータベースにリストされている各マシンにroot SSHアクセスがあることを確認します。sshd_configファイルを更新してSSHサーバを再起動することで、各ノードでroot SSHアクセスを有効にする必要がある場合があります。
 
-### Enable root SSH Access
+### root SSH アクセスの有効化
 
-If `root` SSH access is enabled for each of your machines you can skip this section.
+各マシンで root SSH アクセスが有効になっている場合は、このセクションは省略できます。
 
-By default, a new `debian` install disables SSH access for the `root` user. This is done for security reasons as the `root` user is a well known user on Linux systems, and if a weak password is used on a machine connected to the internet, well, let's just say it's only a matter of time before your machine belongs to someone else. As mention earlier, we are going to enable `root` access over SSH in order to streamline the steps in this tutorial. Security is a tradeoff, and in this case, we are optimizing for convenience. On each machine login via SSH using your user account, then switch to the `root` user using the `su` command:
+デフォルトでは、新しい debian インストールは root ユーザの SSH アクセスを無効にします。これはセキュリティ上の理由からで、root ユーザーは Linux システムでよく知られたユーザーだからです。インターネットに接続されたマシンで弱いパスワードが使われたら、マシンが他人のものになるのは時間の問題です。先に述べたように、このチュートリアルのステップを効率化するために、SSHでrootアクセスを有効にします。セキュリティはトレードオフであり、この場合は利便性を最適化する。各マシンでユーザーアカウントを使ってSSHでログインし、suコマンドを使ってrootユーザーに切り替えます：
 
 ```bash
 su - root
 ```
+### 補足：
 
-Edit the `/etc/ssh/sshd_config` SSH daemon configuration file and the `PermitRootLogin` option to `yes`:
+---
+
+`sudu su -`で問題ありません。
+
+---
+
+`etc/ssh/sshd_config` SSHデーモン設定ファイルを編集し、`PermitRootLogin`オプションを`yes`にしてください：
 
 ```bash
 sed -i \
@@ -48,17 +67,33 @@ sed -i \
   /etc/ssh/sshd_config
 ```
 
-Restart the `sshd` SSH server to pick up the updated configuration file:
+### 補足：
+
+---
+
+この`sed`コマンドがうまく動作せず、ファイル内容が変更されないことがあるので、Vimを使って`etc/ssh/sshd_config`を直接書き換えてください。
+
+ここで、変更する内容としては、上記の`sed`コマンドで行われている`PermitRootLogin`の項目を`PermitRootLogin yes`にするのと、`PasswordAuthentication yes`を追記してください。
+
+そして、`etc/ssh/sshd_config`の変更を保存したら、次は`passwd`コマンドでrootアカウントのパスワードを付与します。
+
+パスワードはこの後で入力を求められるため、覚えられるもので好きなものを設定してください。
+
+---
+
+
+`sshd`SSHサーバーを再起動して、更新されたコンフィギュレーションファイルを取り込む：
 
 ```bash
 systemctl restart sshd
 ```
 
-### Generate and Distribute SSH Keys
 
-In this section you will generate and distribute an SSH keypair to the `server`, `node-0`, and `node-1`, machines, which will be used to run commands on those machines throughout this tutorial. Run the following commands from the `jumpbox` machine.
+### SSH キーの生成と配布
 
-Generate a new SSH key:
+このセクションでは、SSH キーペアを生成して `server`、`node-0`、`node-1` の各マシンに配布します。`jumpbox` マシンから以下のコマンドを実行してください。
+
+新しい SSH 鍵を生成：
 
 ```bash
 ssh-keygen
@@ -73,7 +108,7 @@ Your identification has been saved in /root/.ssh/id_rsa
 Your public key has been saved in /root/.ssh/id_rsa.pub
 ```
 
-Copy the SSH public key to each machine:
+SSH 公開鍵を各マシンにコピー：
 
 ```bash
 while read IP FQDN HOST SUBNET; do 
@@ -81,7 +116,15 @@ while read IP FQDN HOST SUBNET; do
 done < machines.txt
 ```
 
-Once each key is added, verify SSH public key access is working:
+### 補足：
+
+---
+
+この周辺の操作で各ホストで設定したrootパスワードを求められるため、入力をお願いします。
+
+---
+
+それぞれの鍵が追加されたら、SSH公開鍵アクセスが機能していることを確認：
 
 ```bash
 while read IP FQDN HOST SUBNET; do 
@@ -95,13 +138,13 @@ aarch64 GNU/Linux
 aarch64 GNU/Linux
 ```
 
-## Hostnames
+## ホストネーム
 
-In this section you will assign hostnames to the `server`, `node-0`, and `node-1` machines. The hostname will be used when executing commands from the `jumpbox` to each machine. The hostname also play a major role within the cluster. Instead of Kubernetes clients using an IP address to issue commands to the Kubernetes API server, those client will use the `server` hostname instead. Hostnames are also used by each worker machine, `node-0` and `node-1` when registering with a given Kubernetes cluster.
+このセクションでは `server`、`node-0`、`node-1` の各マシンにホスト名を割り当てます。ホスト名は `jumpbox` から各マシンにコマンドを実行する際に使用されます。ホスト名はクラスタ内でも大きな役割を果たします。KubernetesクライアントがIPアドレスを使用してKubernetes APIサーバーにコマンドを発行する代わりに、これらのクライアントは `server` ホスト名を使用します。ホスト名は、Kubernetesクラスタに登録する際に各ワーカーマシン、`node-0`と`node-1`でも使用されます。
 
-To configure the hostname for each machine, run the following commands on the `jumpbox`.
+各マシンのホスト名を設定するには、`jumpbox` 上で以下のコマンドを実行してください。
 
-Set the hostname on each machine listed in the `machines.txt` file:
+`machines.txt` ファイルに記載されている各マシンのホスト名を設定：
 
 ```bash
 while read IP FQDN HOST SUBNET; do 
@@ -111,7 +154,7 @@ while read IP FQDN HOST SUBNET; do
 done < machines.txt
 ```
 
-Verify the hostname is set on each machine:
+各マシンにホスト名が設定されていることを確認：
 
 ```bash
 while read IP FQDN HOST SUBNET; do
@@ -127,16 +170,16 @@ node-1.kubernetes.local
 
 ## DNS
 
-In this section you will generate a DNS `hosts` file which will be appended to `jumpbox` local `/etc/hosts` file and to the `/etc/hosts` file of all three machines used for this tutorial. This will allow each machine to be reachable using a hostname such as `server`, `node-0`, or `node-1`.
+このセクションでは、DNS の `hosts` ファイルを生成し、それを `jumpbox` のローカルの `/etc/hosts` ファイルと、このチュートリアルで使用する3台のマシンの `/etc/hosts` ファイルに追加します。これにより、各マシンは `server`、`node-0`、`node-1` のようなホスト名でアクセスできるようになります。
 
-Create a new `hosts` file and add a header to identify the machines being added:
+新しい `hosts` ファイルを作成し、追加するマシンを識別するためのヘッダーを追加：
 
 ```bash
 echo "" > hosts
 echo "# Kubernetes The Hard Way" >> hosts
 ```
 
-Generate a DNS entry for each machine in the `machines.txt` file and append it to the `hosts` file:
+各マシンの DNS エントリを `machines.txt` ファイルに作成し、それを `hosts` ファイルに追加：
 
 ```bash
 while read IP FQDN HOST SUBNET; do 
@@ -145,7 +188,7 @@ while read IP FQDN HOST SUBNET; do
 done < machines.txt
 ```
 
-Review the DNS entries in the `hosts` file:
+`hosts`ファイルのDNSエントリーを確認する：
 
 ```bash
 cat hosts
@@ -159,11 +202,11 @@ XXX.XXX.XXX.XXX node-0.kubernetes.local node-0
 XXX.XXX.XXX.XXX node-1.kubernetes.local node-1
 ```
 
-## Adding DNS Entries To A Local Machine
+## ローカルマシンへのDNSエントリーの追加
 
-In this section you will append the DNS entries from the `hosts` file to the local `/etc/hosts` file on your `jumpbox` machine.
+このセクションでは `hosts` ファイルの DNS エントリを `jumpbox` マシンのローカルの `/etc/hosts` ファイルに追加します。
 
-Append the DNS entries from `hosts` to `/etc/hosts`:
+`hosts`のDNSエントリを `/etc/hosts` に追加：
 
 ```bash
 cat hosts >> /etc/hosts
