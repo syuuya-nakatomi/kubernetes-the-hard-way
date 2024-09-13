@@ -1,22 +1,22 @@
-# Provisioning a CA and Generating TLS Certificates
+# CAの準備とTLS証明書の生成
 
-In this lab you will provision a [PKI Infrastructure](https://en.wikipedia.org/wiki/Public_key_infrastructure) using openssl to bootstrap a Certificate Authority, and generate TLS certificates for the following components: kube-apiserver, kube-controller-manager, kube-scheduler, kubelet, and kube-proxy. The commands in this section should be run from the `jumpbox`.
+本実習では、opensslを使用して[PKIインフラストラクチャ](https://en.wikipedia.org/wiki/Public_key_infrastructure)をプロビジョニングし、認証局をブートストラップして、次のコンポーネントのTLS証明書を生成します: kube-apiserver、kube-controller-manager、kube-scheduler、kubelet、およびkube-proxy。このセクションのコマンドは `jumpbox` から実行します。
 
-## Certificate Authority
+## 認証局
 
-In this section you will provision a Certificate Authority that can be used to generate additional TLS certificates for the other Kubernetes components. Setting up CA and generating certificates using `openssl` can be time-consuming, especially when doing it for the first time. To streamline this lab, I've included an openssl configuration file `ca.conf`, which defines all the details needed to generate certificates for each Kubernetes component. 
+このセクションでは、他のKubernetesコンポーネント用に追加のTLS証明書を生成するために使用できる認証局をプロビジョニングします。`openssl`を使用して認証局をセットアップして証明書を生成するのは、特に初めて行う場合は時間がかかります。本実習を効率化するために、各Kubernetesコンポーネントの証明書を生成するために必要なすべての詳細を定義したopenssl設定ファイル`ca.conf`が含まれています。
 
-Take a moment to review the `ca.conf` configuration file:
+`ca.conf`設定ファイルを確認：
 
 ```bash
 cat ca.conf
 ```
 
-You don't need to understand everything in the `ca.conf` file to complete this tutorial, but you should consider it a starting point for learning `openssl` and the configuration that goes into managing certificates at a high level.
+このチュートリアルを完了するために、`ca.conf`ファイルのすべてを理解する必要はありませんが、`openssl`と証明書を高いレベルで管理するための設定を学ぶための出発点だと考えてください。
 
-Every certificate authority starts with a private key and root certificate. In this section we are going to create a self-signed certificate authority, and while that's all we need for this tutorial, this shouldn't be considered something you would do in a real-world production level environment. 
+すべての認証局は秘密鍵とルート証明書から始まります。このセクションでは、自己署名認証局を作成します。このチュートリアルで必要なのはこれだけですが、これは実際の本番レベルの環境で行うものではないと考えるべきです。
 
-Generate the CA configuration file, certificate, and private key:
+CA設定ファイル、証明書、秘密鍵を生成：
 
 ```bash
 {
@@ -28,17 +28,17 @@ Generate the CA configuration file, certificate, and private key:
 }
 ```
 
-Results:
+結果:
 
 ```txt
 ca.crt ca.key
 ```
 
-## Create Client and Server Certificates
+## クライアント証明書とサーバ証明書の作成
 
-In this section you will generate client and server certificates for each Kubernetes component and a client certificate for the Kubernetes `admin` user.
+このセクションでは、各Kubernetesコンポーネントのクライアント証明書とサーバー証明書、およびKubernetes `admin`ユーザーのクライアント証明書を生成します。
 
-Generate the certificates and private keys:
+証明書と秘密鍵を生成：
 
 ```bash
 certs=(
@@ -67,17 +67,17 @@ for i in ${certs[*]}; do
 done
 ```
 
-The results of running the above command will generate a private key, certificate request, and signed SSL certificate for each of the Kubernetes components. You can list the generated files with the following command:
+上記のコマンドを実行した結果、Kubernetesの各コンポーネントの秘密鍵、証明書要求、署名付きSSL証明書が生成されます。生成されたファイルは以下のコマンドで一覧表示できます：
 
 ```bash
 ls -1 *.crt *.key *.csr
 ```
 
-## Distribute the Client and Server Certificates
+## クライアント証明書とサーバ証明書の配布
 
-In this section you will copy the various certificates to each machine under a directory that each Kubernetes components will search for the certificate pair. In a real-world environment these certificates should be treated like a set of sensitive secrets as they are often used as credentials by the Kubernetes components to authenticate to each other.
+このセクションでは、各Kubernetesコンポーネントが証明書ペアを検索するディレクトリの下に、様々な証明書を各マシンにコピーします。実際の環境では、これらの証明書はKubernetesコンポーネントが互いに認証するための認証情報として使用されることが多いため、機密性の高い秘密のセットのように扱う必要があります。
 
-Copy the appropriate certificates and private keys to the `node-0` and `node-1` machines:
+適切な証明書と秘密鍵を `node-0` と `node-1` のマシンにコピー：
 
 ```bash
 for host in node-0 node-1; do
@@ -93,7 +93,7 @@ for host in node-0 node-1; do
 done
 ```
 
-Copy the appropriate certificates and private keys to the `server` machine:
+適切な証明書と秘密鍵を `server` マシンにコピー：
 
 ```bash
 scp \
@@ -103,6 +103,6 @@ scp \
   root@server:~/
 ```
 
-> The `kube-proxy`, `kube-controller-manager`, `kube-scheduler`, and `kubelet` client certificates will be used to generate client authentication configuration files in the next lab.
+> `kube-proxy`、`kube-controller-manager`、`kube-scheduler`、`kubelet` クライアント証明書は、次のラボでクライアント認証設定ファイルの生成に使用します。
 
 Next: [Generating Kubernetes Configuration Files for Authentication](05-kubernetes-configuration-files.md)
