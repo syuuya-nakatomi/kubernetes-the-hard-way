@@ -138,7 +138,7 @@ aarch64 GNU/Linux
 aarch64 GNU/Linux
 ```
 
-## ホストネーム
+## ホスト名
 
 このセクションでは `server`、`node-0`、`node-1` の各マシンにホスト名を割り当てます。ホスト名は `jumpbox` から各マシンにコマンドを実行する際に使用されます。ホスト名はクラスタ内でも大きな役割を果たします。KubernetesクライアントがIPアドレスを使用してKubernetes APIサーバーにコマンドを発行する代わりに、これらのクライアントは `server` ホスト名を使用します。ホスト名は、Kubernetesクラスタに登録する際に各ワーカーマシン、`node-0`と`node-1`でも使用されます。
 
@@ -212,7 +212,7 @@ XXX.XXX.XXX.XXX node-1.kubernetes.local node-1
 cat hosts >> /etc/hosts
 ```
 
-Verify that the `/etc/hosts` file has been updated:
+etc/hosts`ファイルが更新されていることを確認：
 
 ```bash
 cat /etc/hosts
@@ -235,7 +235,7 @@ XXX.XXX.XXX.XXX node-0.kubernetes.local node-0
 XXX.XXX.XXX.XXX node-1.kubernetes.local node-1
 ```
 
-At this point you should be able to SSH to each machine listed in the `machines.txt` file using a hostname.
+この時点で、`machines.txt`ファイルにリストされている各マシンに、ホスト名を使ってSSH接続できるはずです。
 
 ```bash
 for host in server node-0 node-1
@@ -249,11 +249,11 @@ node-0 aarch64 GNU/Linux
 node-1 aarch64 GNU/Linux
 ```
 
-## Adding DNS Entries To The Remote Machines
+## リモートマシンへのDNSエントリーの追加
 
-In this section you will append the DNS entries from `hosts` to `/etc/hosts` on each machine listed in the `machines.txt` text file.
+このセクションでは、`machines.txt` テキストファイルに記載されている各マシンの `hosts` から DNS エントリを `/etc/hosts` に追加します。
 
-Copy the `hosts` file to each machine and append the contents to `/etc/hosts`:
+`hosts`ファイルを各マシンにコピーし、その内容を `/etc/hosts`に追加：
 
 ```bash
 while read IP FQDN HOST SUBNET; do
@@ -263,6 +263,6 @@ while read IP FQDN HOST SUBNET; do
 done < machines.txt
 ```
 
-At this point hostnames can be used when connecting to machines from your `jumpbox` machine, or any of the three machines in the Kubernetes cluster. Instead of using IP addresess you can now connect to machines using a hostname such as `server`, `node-0`, or `node-1`.
+この時点で、`jumpbox` マシンや Kubernetes クラスタ内の 3 台のマシンからマシンに接続する際にホスト名を使用できるようになりました。IP アドレスを使う代わりに、`server`、`node-0`、`node-1` などのホスト名を使用してマシンに接続できるようになりました。
 
 Next: [Provisioning a CA and Generating TLS Certificates](04-certificate-authority.md)
