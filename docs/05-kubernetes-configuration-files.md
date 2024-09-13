@@ -1,18 +1,18 @@
-# Generating Kubernetes Configuration Files for Authentication
+# 認証用Kubernetes設定ファイルの生成
 
-In this lab you will generate [Kubernetes configuration files](https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/), also known as kubeconfigs, which enable Kubernetes clients to locate and authenticate to the Kubernetes API Servers.
+本実習では、[Kubernetes設定ファイル](https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/)(kubeconfigsとしても知られています)を生成します。このファイルは、KubernetesクライアントがKubernetes APIサーバーの場所を特定し、認証することを可能にします。
 
-## Client Authentication Configs
+## クライアント認証設定
 
-In this section you will generate kubeconfig files for the `kubelet` and the `admin` user.
+このセクションでは、`kubelet` と `admin` ユーザー用の kubeconfig ファイルを生成します。
 
-### The kubelet Kubernetes Configuration File
+### kubeletのKubernetes設定ファイル
 
-When generating kubeconfig files for Kubelets the client certificate matching the Kubelet's node name must be used. This will ensure Kubelets are properly authorized by the Kubernetes [Node Authorizer](https://kubernetes.io/docs/admin/authorization/node/).
+Kubelet用のkubeconfigファイルを生成する際には、Kubeletのノード名に一致するクライアント証明書を使用する必要があります。これにより、KubeletがKubernetes [Node Authorizer](https://kubernetes.io/docs/admin/authorization/node/)によって適切に認証されます。
 
-> The following commands must be run in the same directory used to generate the SSL certificates during the [Generating TLS Certificates](04-certificate-authority.md) lab.
+> 以下のコマンドは、[TLS証明書の生成](04-certificate-authority.md)実習でSSL証明書を生成するのに使用したのと同じディレクトリで実行する必要があります。
 
-Generate a kubeconfig file the node-0 worker node:
+node-0ワーカーノードのkubeconfigファイルを生成：
 
 ```bash
 for host in node-0 node-1; do
@@ -38,16 +38,16 @@ for host in node-0 node-1; do
 done
 ```
 
-Results:
+結果:
 
 ```text
 node-0.kubeconfig
 node-1.kubeconfig
 ```
 
-### The kube-proxy Kubernetes Configuration File
+### kube-proxy Kubernetes設定ファイル
 
-Generate a kubeconfig file for the `kube-proxy` service:
+`kube-proxy`サービスのkubeconfigファイルを生成：
 
 ```bash
 {
@@ -73,15 +73,15 @@ Generate a kubeconfig file for the `kube-proxy` service:
 }
 ```
 
-Results:
+結果:
 
 ```text
 kube-proxy.kubeconfig
 ```
 
-### The kube-controller-manager Kubernetes Configuration File
+### kube-controller-manager Kubernetes設定ファイル
 
-Generate a kubeconfig file for the `kube-controller-manager` service:
+`kube-controller-manager`サービス用のkubeconfigファイルを生成：
 
 ```bash
 {
@@ -107,16 +107,16 @@ Generate a kubeconfig file for the `kube-controller-manager` service:
 }
 ```
 
-Results:
+結果:
 
 ```text
 kube-controller-manager.kubeconfig
 ```
 
 
-### The kube-scheduler Kubernetes Configuration File
+### kube-scheduler Kubernetes設定ファイル
 
-Generate a kubeconfig file for the `kube-scheduler` service:
+`kube-scheduler`サービス用のkubeconfigファイルを生成：
 
 ```bash
 {
@@ -142,15 +142,15 @@ Generate a kubeconfig file for the `kube-scheduler` service:
 }
 ```
 
-Results:
+結果:
 
 ```text
 kube-scheduler.kubeconfig
 ```
 
-### The admin Kubernetes Configuration File
+### admin Kubernetes設定ファイル
 
-Generate a kubeconfig file for the `admin` user:
+`admin`ユーザー用のkubeconfigファイルを生成：
 
 ```bash
 {
@@ -176,15 +176,15 @@ Generate a kubeconfig file for the `admin` user:
 }
 ```
 
-Results:
+結果:
 
 ```text
 admin.kubeconfig
 ```
 
-## Distribute the Kubernetes Configuration Files
+## Kubernetes設定ファイルの配布
 
-Copy the `kubelet` and `kube-proxy` kubeconfig files to the node-0 instance:
+`kubelet` と `kube-proxy` の kubeconfig ファイルを node-0 インスタンスにコピーします：
 
 ```bash
 for host in node-0 node-1; do
@@ -198,7 +198,7 @@ for host in node-0 node-1; do
 done
 ```
 
-Copy the `kube-controller-manager` and `kube-scheduler` kubeconfig files to the controller instance:
+`kube-controller-manager` と `kube-scheduler` の kubeconfig ファイルをコントローラインスタンスにコピー：
 
 ```bash
 scp admin.kubeconfig \
