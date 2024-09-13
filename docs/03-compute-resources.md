@@ -265,4 +265,4 @@ done < machines.txt
 
 この時点で、`jumpbox` マシンや Kubernetes クラスタ内の 3 台のマシンからマシンに接続する際にホスト名を使用できるようになりました。IP アドレスを使う代わりに、`server`、`node-0`、`node-1` などのホスト名を使用してマシンに接続できるようになりました。
 
-Next: [Provisioning a CA and Generating TLS Certificates](04-certificate-authority.md)
+Next: [CAの準備とTLS証明書の生成](04-certificate-authority.md)
