@@ -44,4 +44,4 @@ EC2のVM作成時にOSとしてDebianを指定し、デフォルトのx86からA
 #1 SMP Debian 6.1.55-1 (2023-09-29) aarch64 GNU/Linux
 ```
 
-Next: [setting-up-the-jumpbox](02-jumpbox.md)
+Next: [Jumpboxのセットアップ](02-jumpbox.md)
