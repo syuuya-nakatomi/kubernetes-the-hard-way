@@ -9,7 +9,7 @@
 ```bash
 ssh root@jumpbox
 ```
-### 補足
+### 補足：
 
 ---
 
