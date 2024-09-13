@@ -25,7 +25,7 @@ envsubst < configs/encryption-config.yaml \
 
 ---
 
-ここで`configs/encryption-config.yaml`が出てくるが、過去のコミットでこのファイルは削除されているため、Vimを使って次の内容のファイルを作成します。
+ここで`configs/encryption-config.yaml`が出てくるが、過去のコミットでこのファイルは削除されているため、Vimを使って次の内容のconfigs/encryption-config.yamlを作成します。
 
 ```
 kind: EncryptionConfig
@@ -39,6 +39,13 @@ resources:
             - name: key1
               secret: ${ENCRYPTION_KEY}
       - identity: {}
+```
+
+その後に下記のコマンドを実行すると`encryption-config.yaml`の`secret`の部分に暗号鍵が内包される。
+
+```bash
+envsubst < configs/encryption-config.yaml \
+  > encryption-config.yaml
 ```
 
 なお、Issueも建てられています。
