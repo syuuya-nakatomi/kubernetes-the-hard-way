@@ -126,4 +126,4 @@ Kustomize Version: v5.0.4-0.20230601165947-6ce0bf390ce3
 
 これにより、`jumpbox`にはこのチュートリアルのラボを完了するのに必要なすべてのコマンドラインツールとユーティリティがセットアップされました。
 
-Next: [Provisioning Compute Resources](03-compute-resources.md)
+Next: [コンピューターリソースの準備](03-compute-resources.md)
