@@ -25,7 +25,7 @@ envsubst < configs/encryption-config.yaml \
 
 ---
 
-ここで`configs/encryption-config.yaml`が出てくるが、過去のコミットでこのファイルは削除されているため、Vimを使って次の内容のconfigs/encryption-config.yamlを作成します。
+ここで`configs/encryption-config.yaml`が出てくるが、過去のコミットでこのファイルは削除されているため、Vimを使って次の内容の`configs/encryption-config.yaml`を作成します。
 
 ```
 kind: EncryptionConfig
