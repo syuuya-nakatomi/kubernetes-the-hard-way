@@ -1,10 +1,10 @@
-# Bootstrapping the Kubernetes Worker Nodes
+# Kubernetesワーカーノードのブートストラップ
 
-In this lab you will bootstrap two Kubernetes worker nodes. The following components will be installed: [runc](https://github.com/opencontainers/runc), [container networking plugins](https://github.com/containernetworking/cni), [containerd](https://github.com/containerd/containerd), [kubelet](https://kubernetes.io/docs/admin/kubelet), and [kube-proxy](https://kubernetes.io/docs/concepts/cluster-administration/proxies).
+本実習では、2つのKubernetesワーカーノードをブートストラップします。これらのコンポーネントをインストールします： [runc](https://github.com/opencontainers/runc)、[container networking plugins](https://github.com/containernetworking/cni)、[containerd](https://github.com/containerd/containerd)、[kubelet](https://kubernetes.io/docs/admin/kubelet)、[kube-proxy](https://kubernetes.io/docs/concepts/cluster-administration/proxies)。
 
-## Prerequisites
+## 前提条件
 
-Copy Kubernetes binaries and systemd unit files to each worker instance:
+Kubernetesバイナリとsystemdユニットファイルを各ワーカーインスタンスにコピー：
 
 ```bash
 for host in node-0 node-1; do
@@ -32,7 +32,6 @@ for host in node-0 node-1; do
     downloads/kube-proxy \
     configs/99-loopback.conf \
     configs/containerd-config.toml \
-    configs/kubelet-config.yaml \
     configs/kube-proxy-config.yaml \
     units/containerd.service \
     units/kubelet.service \
@@ -41,15 +40,50 @@ for host in node-0 node-1; do
 done
 ```
 
-The commands in this lab must be run on each worker instance: `node-0`, `node-1`. Login to the worker instance using the `ssh` command. Example:
+### 補足：
+
+---
+
+上記のコマンドですが、元の方では
+
+```bash
+for host in node-0 node-1; do
+  scp \
+    downloads/runc.arm64 \
+    downloads/crictl-v1.28.0-linux-arm.tar.gz \
+    downloads/cni-plugins-linux-arm64-v1.3.0.tgz \
+    downloads/containerd-1.7.8-linux-arm64.tar.gz \
+    downloads/kubectl \
+    downloads/kubelet \
+    downloads/kube-proxy \
+    configs/99-loopback.conf \
+    configs/containerd-config.toml \
+    configs/kubelet-config.yaml \ <<<なぜか2回送っているところ
+    configs/kube-proxy-config.yaml \
+    units/containerd.service \
+    units/kubelet.service \
+    units/kube-proxy.service \
+    root@$host:~/
+done
+```
+
+となっており、前項での`SUBNET`を書き込んだファイルを送っているのに対し、もう一度素のファイルを送っているために、ファイルが初期化してしまう問題が起きるため、このページでは事前に行を消去させていただきました。
+
+こちらについてはIssueを建てさせて頂いたため、どこかで対応されるかもしれません。
+
+[kubelet-config.yaml is initialized and kubelet cannot be started #808](https://github.com/kelseyhightower/kubernetes-the-hard-way/issues/808)
+
+---
+
+本実習の以下のコマンドは、それぞれのワーカーインスタンスで実行する必要があります: `node-0`, `node-1`. ssh` コマンドを使用してワーカーインスタンスにログイン：
 
 ```bash
 ssh root@node-0
 ```
 
-## Provisioning a Kubernetes Worker Node
+## Kubernetesワーカーノードの準備
 
-Install the OS dependencies:
+OSの依存関係をインストール：
 
 ```bash
 {
@@ -58,27 +92,27 @@ Install the OS dependencies:
 }
 ```
 
-> The socat binary enables support for the `kubectl port-forward` command.
+> socatバイナリは`kubectl port-forward`コマンドのサポートを有効にします。
 
-### Disable Swap
+### スワップを無効にする
 
-By default, the kubelet will fail to start if [swap](https://help.ubuntu.com/community/SwapFaq) is enabled. It is [recommended](https://github.com/kubernetes/kubernetes/issues/7294) that swap be disabled to ensure Kubernetes can provide proper resource allocation and quality of service.
+デフォルトでは、[swap](https://help.ubuntu.com/community/SwapFaq)が有効になっていると、kubeletは起動に失敗します。Kubernetesが適切なリソース割り当てとサービス品質を提供できるように、スワップを無効にすることが[推奨](https://github.com/kubernetes/kubernetes/issues/7294)されています。
 
-Verify if swap is enabled:
+スワップが有効になっているか確認：
 
 ```bash
 swapon --show
 ```
 
-If output is empty then swap is not enabled. If swap is enabled run the following command to disable swap immediately:
+出力が空の場合、スワップは有効になっていません。スワップが有効になっている場合は、以下のコマンドを実行してスワップを直ちに無効にしてください：
 
 ```bash
 swapoff -a
 ```
 
-> To ensure swap remains off after reboot consult your Linux distro documentation.
+> 再起動後もスワップがオフのままであることを確認するには、Linuxディストロのドキュメントを参照してください。
 
-Create the installation directories:
+インストール用ディレクトリを作成：
 
 ```bash
 mkdir -p \
@@ -90,7 +124,7 @@ mkdir -p \
   /var/run/kubernetes
 ```
 
-Install the worker binaries:
+ワーカーバイナリをインストール：
 
 ```bash
 {
@@ -105,17 +139,24 @@ Install the worker binaries:
 }
 ```
 
-### Configure CNI Networking
+### CNIネットワーキングの設定
 
-Create the `bridge` network configuration file:
+`bridge` ネットワーク設定ファイルを作成：
 
 ```bash
 mv 10-bridge.conf 99-loopback.conf /etc/cni/net.d/
 ```
+### 補足：
 
-### Configure containerd
+---
 
-Install the `containerd` configuration files:
+原文でもこの文周辺に作成とあるが、実行しているコマンドはファイルの移動です。
+
+---
+
+### containerdの設定
+
+`containerd`設定ファイルをインストール：
 
 ```bash
 {
@@ -125,9 +166,9 @@ Install the `containerd` configuration files:
 }
 ```
 
-### Configure the Kubelet
+### Kubeletの設定
 
-Create the `kubelet-config.yaml` configuration file:
+`kubelet-config.yaml`設定ファイルを作成：
 
 ```bash
 {
@@ -136,7 +177,7 @@ Create the `kubelet-config.yaml` configuration file:
 }
 ```
 
-### Configure the Kubernetes Proxy
+### Kubernetesプロキシの設定
 
 ```bash
 {
@@ -145,7 +186,7 @@ Create the `kubelet-config.yaml` configuration file:
 }
 ```
 
-### Start the Worker Services
+### ワーカー・サービスの開始
 
 ```bash
 {
@@ -155,11 +196,11 @@ Create the `kubelet-config.yaml` configuration file:
 }
 ```
 
-## Verification
+## 確認
 
-The compute instances created in this tutorial will not have permission to complete this section. Run the following commands from the `jumpbox` machine.
+このチュートリアルで作成したコンピュートインスタンスには、このセクションを完了する権限がありません。`jumpbox`マシンから以下のコマンドを実行してください。
 
-List the registered Kubernetes nodes:
+登録されているKubernetesノードをリストアップ：
 
 ```bash
 ssh root@server \
