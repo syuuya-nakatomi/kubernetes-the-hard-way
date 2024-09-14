@@ -1,16 +1,16 @@
-# Provisioning Pod Network Routes
+# ポッドネットワークルートの準備
 
-Pods scheduled to a node receive an IP address from the node's Pod CIDR range. At this point pods can not communicate with other pods running on different nodes due to missing network [routes](https://cloud.google.com/compute/docs/vpc/routes).
+ノードにスケジュールされたポッドは、ノードのポッドCIDR範囲からIPアドレスを受け取ります。この時点では、ネットワーク[ルート](https://cloud.google.com/compute/docs/vpc/routes)が見つからないため、ポッドは異なるノードで動作している他のポッドと通信できません。
 
-In this lab you will create a route for each worker node that maps the node's Pod CIDR range to the node's internal IP address.
+本実習では、ノードのPod CIDR範囲をノードの内部IPアドレスにマップするルートを各ワーカーノードに作成します。
 
-> There are [other ways](https://kubernetes.io/docs/concepts/cluster-administration/networking/#how-to-achieve-this) to implement the Kubernetes networking model.
+> Kubernetesのネットワーキング・モデルを実装する[他の方法](https://kubernetes.io/docs/concepts/cluster-administration/networking/#how-to-achieve-this)もあります。
 
-## The Routing Table
+## ルーティングテーブル
 
-In this section you will gather the information required to create routes in the `kubernetes-the-hard-way` VPC network.
+このセクションでは、`kubernetes-the-hard-way` VPCネットワークでルートを作成するために必要な情報を収集します。
 
-Print the internal IP address and Pod CIDR range for each worker instance:
+各ワーカーインスタンスの内部IPアドレスとPod CIDR範囲を表示：
 
 ```bash
 {
@@ -41,7 +41,7 @@ ssh root@node-1 <<EOF
 EOF
 ```
 
-## Verification 
+## 確認
 
 ```bash
 ssh root@server ip route
