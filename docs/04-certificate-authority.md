@@ -1,6 +1,6 @@
 # CAの準備とTLS証明書の生成
 
-本実習では、opensslを使用して[PKIインフラストラクチャ](https://en.wikipedia.org/wiki/Public_key_infrastructure)を準備し、認証局を構成した後に、これらのコンポーネントのTLS証明書を生成します: kube-apiserver、kube-controller-manager、kube-scheduler、kubelet、kube-proxy。
+本実習では、opensslを使用して[PKIインフラストラクチャ](https://en.wikipedia.org/wiki/Public_key_infrastructure)を準備し、自己証明認証局を構成した後に、これらのコンポーネントのTLS証明書を生成します: kube-apiserver、kube-controller-manager、kube-scheduler、kubelet、kube-proxy。
 
 このセクションのコマンドは `jumpbox` から実行してください。
 
