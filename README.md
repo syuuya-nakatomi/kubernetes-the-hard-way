@@ -1,6 +1,6 @@
 # Kubernetes The Hard Way(ARM64移行版 日本語訳)
 
-### 【注意】この翻訳はKubernetes The Hard WayがARM64での動作環境版へ移行したことにより、仕様が大きく変更されたため、日本語訳と実行する際の解説、補足を追加したものです。以前のIntel版での動作についての日本語訳は[Inducter](https://github.com/inductor)さんの[Kubernetes The Hard Way(日本語版)](https://github.com/inductor/kubernetes-the-hard-way?tab=readme-ov-file)をご参照ください
+### 【注意】この翻訳はKubernetes The Hard WayがARM64での動作環境版へ移行したことにより、仕様が大きく変更されたため、日本語訳と実行する際の解説、補足を追加したものです。以前のIntel版での動作についての日本語訳は[Inducter](https://github.com/inductor)さんの[Kubernetes The Hard Way(日本語版)](https://github.com/inductor/kubernetes-the-hard-way?tab=readme-ov-file)をご参照ください。Typoや誤訳などを見つけた場合はPR、Issue、または[X(Twitter)](https://x.com/eatshuumai)にてお知らせください。
 
 このチュートリアルでは、Kubernetesのセットアップを地道な方法で行なっていきます。このガイドは、Kubernetesクラスタを立ち上げるための完全自動化ツールを探している人向けではありません。Kubernetes The Hard Wayは学習用に最適化されており、Kubernetesクラスタのブートストラップに必要な各タスクを確実に理解するために長い道のりを選ぶことを意味します。
 
