@@ -60,4 +60,4 @@ envsubst < configs/encryption-config.yaml \
 scp encryption-config.yaml root@server:~/
 ```
 
-Next: [Bootstrapping the etcd Cluster](07-bootstrapping-etcd.md)
+Next: [etcdクラスタのブートストラップ](07-bootstrapping-etcd.md)
