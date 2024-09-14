@@ -214,4 +214,4 @@ node-0   Ready    <none>   1m     v1.28.3
 node-1   Ready    <none>   10s    v1.28.3
 ```
 
-Next: [Configuring kubectl for Remote Access](10-configuring-kubectl.md)
+Next: [リモートアクセス用kubectlの設定](10-configuring-kubectl.md)
