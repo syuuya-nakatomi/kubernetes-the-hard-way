@@ -59,7 +59,7 @@ su - root
 
 ---
 
-`etc/ssh/sshd_config` SSHデーモン設定ファイルを編集し、`PermitRootLogin`オプションを`yes`にしてください：
+`/etc/ssh/sshd_config` SSHデーモン設定ファイルを編集し、`PermitRootLogin`オプションを`yes`にしてください：
 
 ```bash
 sed -i \
@@ -71,11 +71,11 @@ sed -i \
 
 ---
 
-この`sed`コマンドがうまく動作せず、ファイル内容が変更されないことがあるので、Vimを使って`etc/ssh/sshd_config`を直接書き換えてください。
+この`sed`コマンドがうまく動作せず、ファイル内容が変更されないことがあるので、Vimを使って`/etc/ssh/sshd_config`を直接書き換えてください。
 
 ここで、変更する内容としては、上記の`sed`コマンドで行われている`PermitRootLogin`の項目を`PermitRootLogin yes`にするのと、`PasswordAuthentication yes`を追記してください。
 
-そして、`etc/ssh/sshd_config`の変更を保存したら、次は`passwd`コマンドでrootアカウントのパスワードを付与します。
+そして、`/etc/ssh/sshd_config`の変更を保存したら、次は`passwd`コマンドでrootアカウントのパスワードを付与します。
 
 パスワードはこの後で入力を求められるため、覚えられるもので好きなものを設定してください。
 
