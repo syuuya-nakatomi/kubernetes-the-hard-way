@@ -1,10 +1,10 @@
-# Bootstrapping the Kubernetes Control Plane
+# Kubernetesコントロールプレーンのブートストラップ
 
-In this lab you will bootstrap the Kubernetes control plane. The following components will be installed the controller machine: Kubernetes API Server, Scheduler, and Controller Manager.
+本実習では、Kubernetesコントロールプレーンをブートストラップします。これらのコンポーネントをコントローラーマシンにインストールします： Kubernetes API Server、Scheduler、Controller Manager
 
-## Prerequisites
+## 前提条件
 
-Copy Kubernetes binaries and systemd unit files to the `server` instance:
+Kubernetes のバイナリと systemd のユニットファイルを `server` インスタンスにコピー：
 
 ```bash
 scp \
@@ -20,23 +20,23 @@ scp \
   root@server:~/
 ```
 
-The commands in this lab must be run on the controller instance: `server`. Login to the controller instance using the `ssh` command. Example:
+本実習のコマンドは、コントローラインスタンス `server` で実行する必要があります。`ssh` コマンドを使用して、コントローラインスタンスにログイン：
 
 ```bash
 ssh root@server
 ```
 
-## Provision the Kubernetes Control Plane
+## Kubernetesコントロールプレーンの準備
 
-Create the Kubernetes configuration directory:
+Kubernetes設定ディレクトリを作成：
 
 ```bash
 mkdir -p /etc/kubernetes/config
 ```
 
-### Install the Kubernetes Controller Binaries
+### Kubernetesコントローラバイナリをインストール
 
-Install the Kubernetes binaries:
+Kubernetesのバイナリをインストール：
 
 ```bash
 {
@@ -51,7 +51,7 @@ Install the Kubernetes binaries:
 }
 ```
 
-### Configure the Kubernetes API Server
+### Kubernetes APIサーバーの設定
 
 ```bash
 {
@@ -65,48 +65,48 @@ Install the Kubernetes binaries:
 }
 ```
 
-Create the `kube-apiserver.service` systemd unit file:
+`kube-apiserver.service`のsystemdユニットファイルを作成：
 
 ```bash
 mv kube-apiserver.service \
   /etc/systemd/system/kube-apiserver.service
 ```
 
-### Configure the Kubernetes Controller Manager
+### Kubernetes Controller Managerの設定
 
-Move the `kube-controller-manager` kubeconfig into place:
+`kube-controller-manager` kubeconfigを所定の位置に移動：
 
 ```bash
 mv kube-controller-manager.kubeconfig /var/lib/kubernetes/
 ```
 
-Create the `kube-controller-manager.service` systemd unit file:
+`kube-controller-manager.service`のsystemdユニットファイルを作成：
 
 ```bash
 mv kube-controller-manager.service /etc/systemd/system/
 ```
 
-### Configure the Kubernetes Scheduler
+### Kubernetesスケジューラーの設定
 
-Move the `kube-scheduler` kubeconfig into place:
+`kube-scheduler`のkubeconfigを所定の位置に移動：
 
 ```bash
 mv kube-scheduler.kubeconfig /var/lib/kubernetes/
 ```
 
-Create the `kube-scheduler.yaml` configuration file:
+`kube-scheduler.yaml`設定ファイルを作成：
 
 ```bash
 mv kube-scheduler.yaml /etc/kubernetes/config/
 ```
 
-Create the `kube-scheduler.service` systemd unit file:
+`kube-scheduler.service`のsystemdユニットファイルを作成：
 
 ```bash
 mv kube-scheduler.service /etc/systemd/system/
 ```
 
-### Start the Controller Services
+### コントローラーサービスの開始
 
 ```bash
 {
@@ -120,10 +120,10 @@ mv kube-scheduler.service /etc/systemd/system/
 }
 ```
 
-> Allow up to 10 seconds for the Kubernetes API Server to fully initialize.
+> Kubernetes API Serverが完全に初期化されるまで、最大10秒待ちます。
 
 
-### Verification
+### 確認
 
 ```bash
 kubectl cluster-info \
@@ -134,30 +134,30 @@ kubectl cluster-info \
 Kubernetes control plane is running at https://127.0.0.1:6443
 ```
 
-## RBAC for Kubelet Authorization
+## Kubelet認証のためのRBAC
 
-In this section you will configure RBAC permissions to allow the Kubernetes API Server to access the Kubelet API on each worker node. Access to the Kubelet API is required for retrieving metrics, logs, and executing commands in pods.
+このセクションでは、Kubernetes API Serverが各ワーカーノードのKubelet APIにアクセスできるようにRBAC権限を設定します。Kubelet APIへのアクセスは、メトリクスやログの取得、Podでのコマンド実行に必要です。
 
-> This tutorial sets the Kubelet `--authorization-mode` flag to `Webhook`. Webhook mode uses the [SubjectAccessReview](https://kubernetes.io/docs/admin/authorization/#checking-api-access) API to determine authorization.
+> このチュートリアルでは、Kubelet の `--authorization-mode` フラグを `Webhook` に設定します。Webhook モードでは、[SubjectAccessReview](https://kubernetes.io/docs/admin/authorization/#checking-api-access) API を使用して認可を決定します。
 
-The commands in this section will affect the entire cluster and only need to be run on the controller node.
+このセクションのコマンドはクラスタ全体に影響し、コントローラノードで実行する必要があります。
 
 ```bash
 ssh root@server
 ```
 
-Create the `system:kube-apiserver-to-kubelet` [ClusterRole](https://kubernetes.io/docs/admin/authorization/rbac/#role-and-clusterrole) with permissions to access the Kubelet API and perform most common tasks associated with managing pods:
+Kubelet APIにアクセスし、Podの管理に関連するほとんどの一般的なタスクを実行する権限を持つ`system:kube-apiserver-to-kubelet` [ClusterRole](https://kubernetes.io/docs/admin/authorization/rbac/#role-and-clusterrole)を作成：
 
 ```bash
 kubectl apply -f kube-apiserver-to-kubelet.yaml \
   --kubeconfig admin.kubeconfig
 ```
 
-### Verification
+### 確認
 
-At this point the Kubernetes control plane is up and running. Run the following commands from the `jumpbox` machine to verify it's working:
+この時点でKubernetesのコントロールプレーンは稼働している。`jumpbox`マシンから以下のコマンドを実行して、動作していることを確認できます：
 
-Make a HTTP request for the Kubernetes version info:
+Kubernetesのバージョン情報をHTTPリクエスト：
 
 ```bash
 curl -k --cacert ca.crt https://server.kubernetes.local:6443/version
