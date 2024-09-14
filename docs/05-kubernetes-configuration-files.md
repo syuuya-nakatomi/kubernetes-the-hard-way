@@ -207,4 +207,4 @@ scp admin.kubeconfig \
   root@server:~/
 ```
 
-Next: [Generating the Data Encryption Config and Key](06-data-encryption-keys.md)
+Next: [データ暗号化コンフィグとキーの生成](06-data-encryption-keys.md)
