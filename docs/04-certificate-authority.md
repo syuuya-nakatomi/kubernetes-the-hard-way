@@ -105,4 +105,4 @@ scp \
 
 > `kube-proxy`、`kube-controller-manager`、`kube-scheduler`、`kubelet` クライアント証明書は、次のラボでクライアント認証設定ファイルの生成に使用します。
 
-Next: [Generating Kubernetes Configuration Files for Authentication](05-kubernetes-configuration-files.md)
+Next: [認証用Kubernetes設定ファイルの生成](05-kubernetes-configuration-files.md)
