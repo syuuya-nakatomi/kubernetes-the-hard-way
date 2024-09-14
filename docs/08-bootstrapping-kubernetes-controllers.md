@@ -177,4 +177,4 @@ curl -k --cacert ca.crt https://server.kubernetes.local:6443/version
 }
 ```
 
-Next: [Bootstrapping the Kubernetes Worker Nodes](09-bootstrapping-kubernetes-workers.md)
+Next: [Kubernetesワーカーノードのブートストラップ](09-bootstrapping-kubernetes-workers.md)
