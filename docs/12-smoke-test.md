@@ -187,4 +187,4 @@ ETag: "6537cac7-267"
 Accept-Ranges: bytes
 ```
 
-Next: [Cleaning Up](13-cleanup.md)
+Next: [お掃除](13-cleanup.md)
