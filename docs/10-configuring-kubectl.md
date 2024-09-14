@@ -1,14 +1,14 @@
-# Configuring kubectl for Remote Access
+# リモートアクセス用kubectlの設定
 
-In this lab you will generate a kubeconfig file for the `kubectl` command line utility based on the `admin` user credentials.
+本実習では、`admin` ユーザー資格情報に基づいて `kubectl` コマンドラインユーティリティ用の kubeconfig ファイルを生成します。
 
-> Run the commands in this lab from the `jumpbox` machine.
+> 本実習のコマンドは`jumpbox`マシンから実行してください。
 
-## The Admin Kubernetes Configuration File
+## Admin Kubernetes設定ファイル
 
-Each kubeconfig requires a Kubernetes API Server to connect to.
+各kubeconfigは、接続するKubernetes API Serverを必要とします。
 
-You should be able to ping `server.kubernetes.local` based on the `/etc/hosts` DNS entry from a previous lap.
+前項の`/etc/hosts`DNSエントリに基づいて`server.kubernetes.local`にpingできるはずです。
 
 ```bash
 curl -k --cacert ca.crt \
@@ -29,7 +29,7 @@ curl -k --cacert ca.crt \
 }
 ```
 
-Generate a kubeconfig file suitable for authenticating as the `admin` user:
+`admin`ユーザーとして認証するのに適したkubeconfigファイルを生成：
 
 ```bash
 {
@@ -49,12 +49,11 @@ Generate a kubeconfig file suitable for authenticating as the `admin` user:
   kubectl config use-context kubernetes-the-hard-way
 }
 ```
-The results of running the command above should create a kubeconfig file in the default location `~/.kube/config` used by the  `kubectl` commandline tool. This also means you can run the `kubectl` command without specifying a config.
+上記のコマンドを実行した結果、`kubectl` コマンドラインツールが使用するデフォルトの場所 `~/.kube/config` に kubeconfig ファイルが作成されるはずです。これは、config を指定せずに `kubectl` コマンドを実行できることも意味します。
 
+## 確認
 
-## Verification
-
-Check the version of the remote Kubernetes cluster:
+リモートKubernetesクラスタのバージョンを確認：
 
 ```bash
 kubectl version
@@ -66,7 +65,7 @@ Kustomize Version: v5.0.4-0.20230601165947-6ce0bf390ce3
 Server Version: v1.28.3
 ```
 
-List the nodes in the remote Kubernetes cluster:
+リモートKubernetesクラスタのノードをリストアップ：
 
 ```bash
 kubectl get nodes
