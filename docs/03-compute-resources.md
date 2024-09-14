@@ -57,6 +57,8 @@ su - root
 
 `sudo su -`で問題ありません。
 
+リモートターミナルから`sudo su -`出来ない場合は`console`からrootアカウントで`visudo`コマンドを用いてsudo可能ユーザーの定義を行う必要性があります。
+
 ---
 
 `/etc/ssh/sshd_config` SSHデーモン設定ファイルを編集し、`PermitRootLogin`オプションを`yes`にしてください：
