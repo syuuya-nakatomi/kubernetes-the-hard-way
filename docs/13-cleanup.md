@@ -1,7 +1,7 @@
-# Cleaning Up
+# お掃除
 
-In this lab you will delete the compute resources created during this tutorial.
+本実習では、このチュートリアルで作成したコンピュータリソースを削除します。
 
-## Compute Instances
+## コンピュータインスタンス
 
-Delete the controller and worker compute instances.
+コントローラとワーカーのコンピュータインスタンスを削除します。
